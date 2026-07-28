@@ -1240,8 +1240,9 @@ async function pushUI(){
       [{key:'_ui_labels',data:UI,updated_at:new Date().toISOString(),updated_by:(S.user&&S.user.name)||'system'}],
       {onConflict:'key'}
     );
-    if(error)console.error('pushUI error',error);
-  }catch(e){console.error('pushUI exception',e);}
+    if(error){console.error('pushUI error',error);alert('[진단] pushUI 실패: '+JSON.stringify(error));}
+    else{alert('[진단] pushUI 성공 — 서버에 저장 완료');}
+  }catch(e){console.error('pushUI exception',e);alert('[진단] pushUI 예외 발생: '+e.message);}
 }
 function saveUser(){localStorage.setItem('cb_user',JSON.stringify(S.user));}
 // Admin helpers
@@ -1971,10 +1972,11 @@ function saveFinEdit(){
 }
 function cancelFinEdit(){S.landingEdit=0;renderLanding();}
 function saveFinCe(el,id){
-  if(!isAdmin())return;
+  if(!isAdmin()){alert('[진단] isAdmin() = false — 저장 안 됨');return;}
   const oldVal=UI[id];  // 이전 값 캡처 (번역캐시 삭제용)
   const val=el.innerText.trim();
   UI[id]=val;saveUI();
+  alert('[진단] UI["'+id+'"] = "'+val+'" 로 설정하고 서버 전송을 시작했어요');
   // 이전 값의 번역캐시 삭제 (새 값은 아직 번역 안됨)
   if(oldVal&&S.translations){Object.keys(S.translations).forEach(l=>delete S.translations[l][oldVal]);}
 }
