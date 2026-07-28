@@ -1178,8 +1178,14 @@ async function syncFromServer(){
       // 최초 1회 실행: 서버가 비어있으면 지금 갖고있는(로컬/베이크된) 데이터로 시딩
       await pushAllData();
       await pushAllChangelog();
+      await pushUI();
     }else{
-      rows.forEach(r=>{S.data[r.key]=r.data;_lastHistJson[r.key]=JSON.stringify(r.data);});
+      let uiFound=false;
+      rows.forEach(r=>{
+        if(r.key==='_ui_labels'){Object.assign(UI,r.data||{});uiFound=true;}
+        else{S.data[r.key]=r.data;_lastHistJson[r.key]=JSON.stringify(r.data);}
+      });
+      if(!uiFound)await pushUI(); // 서버에 아직 UI 라벨 행이 없으면(과거 버전) 지금 값으로 시딩
       // INIT_DATA엔 있는데 서버엔 아직 없는 카테고리(신규 국가 등)는 추가하고 서버에도 반영
       let needSeed=false;
       Object.keys(INIT_DATA).forEach(k=>{if(!S.data[k]){S.data[k]=JSON.parse(JSON.stringify(INIT_DATA[k]));needSeed=true;}});
@@ -1193,6 +1199,7 @@ async function syncFromServer(){
     }
     localStorage.setItem('cb_data',JSON.stringify(S.data));
     localStorage.setItem('cb_cl',JSON.stringify(S.changelog));
+    localStorage.setItem('cb_ui',JSON.stringify(UI));
   }catch(e){
     console.error('syncFromServer failed, 로컬 캐시로 표시',e);
     notifySyncFail();
@@ -1205,8 +1212,13 @@ function subscribeRealtime(){
   sbc.channel('app_data_changes')
     .on('postgres_changes',{event:'*',schema:'public',table:'app_data'},payload=>{
       if(payload.new&&payload.new.key){
-        S.data[payload.new.key]=payload.new.data;
-        localStorage.setItem('cb_data',JSON.stringify(S.data));
+        if(payload.new.key==='_ui_labels'){
+          Object.assign(UI,payload.new.data||{});
+          localStorage.setItem('cb_ui',JSON.stringify(UI));
+        }else{
+          S.data[payload.new.key]=payload.new.data;
+          localStorage.setItem('cb_data',JSON.stringify(S.data));
+        }
         renderHeader();
         renderPage(S.page);
       }
@@ -1219,7 +1231,18 @@ function subscribeRealtime(){
     })
     .subscribe();
 }
-function saveUI(){localStorage.setItem('cb_ui',JSON.stringify(UI));}
+function saveUI(){localStorage.setItem('cb_ui',JSON.stringify(UI));pushUI();}
+// 260716 발견: saveUI()가 localStorage에만 저장하고 온라인(Supabase)에는 전혀 반영되지 않던 버그.
+// 재무 목표(contenteditable) 등 UI 라벨류 수정이 "저장은 되는데 다른 기기/새로고침 시 사라진다"는 문제의 원인이었음.
+async function pushUI(){
+  try{
+    const {error}=await sbc.from('app_data').upsert(
+      [{key:'_ui_labels',data:UI,updated_at:new Date().toISOString(),updated_by:(S.user&&S.user.name)||'system'}],
+      {onConflict:'key'}
+    );
+    if(error)console.error('pushUI error',error);
+  }catch(e){console.error('pushUI exception',e);}
+}
 function saveUser(){localStorage.setItem('cb_user',JSON.stringify(S.user));}
 // Admin helpers
 function isAdmin(){return S.user&&S.user.email==='kelly.ko@classys.com';}
