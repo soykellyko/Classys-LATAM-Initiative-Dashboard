@@ -1243,9 +1243,8 @@ async function pushUI(){
       [{key:'_ui_labels',data:UI,updated_at:new Date().toISOString(),updated_by:(S.user&&S.user.name)||'system'}],
       {onConflict:'key'}
     );
-    if(error){console.error('pushUI error',error);alert('[진단] pushUI 실패: '+JSON.stringify(error));}
-    else{alert('[진단] pushUI 성공 — 서버에 저장 완료');}
-  }catch(e){console.error('pushUI exception',e);alert('[진단] pushUI 예외 발생: '+e.message);}
+    if(error)console.error('pushUI error',error);
+  }catch(e){console.error('pushUI exception',e);}
 }
 function saveUser(){localStorage.setItem('cb_user',JSON.stringify(S.user));}
 // Admin helpers
@@ -1862,7 +1861,7 @@ function renderLanding(){
   const admin=isAdmin();
   const mkFinCell=(id,val,ph,isTarget)=>{
     if(isTarget&&!admin)return`<div class="fi-val" style="font-size:18px">${val}</div>`;
-    if(isTarget&&admin)return`<div contenteditable="true" class="ce-cell" data-field="${id}"
+    if(isTarget&&admin)return`<div contenteditable="true" class="ce-cell" data-field="${id}" data-orig="${esc(val)}"
       onblur="saveFinCe(this,'${id}')" style="font-size:18px;font-weight:800;color:var(--navy);outline:none;border-bottom:1px dashed #cbd5e1;min-width:60px;display:inline-block"
       title="${T('클릭하여 수정')}">${val}</div>`;
     if(isFinEdit||admin)return`<input class="einput" id="${id}" value="${val}" placeholder="${ph}" style="font-size:16px;text-align:center;margin-top:6px">`;
@@ -1879,8 +1878,8 @@ function renderLanding(){
       <div class="fin-item">
         <div class="fi-label">${gt('fin.rev.label','Revenue 목표')}</div>
         ${mkFinCell('fin-rev-target',gt('fin.rev.target','R$ 501.1M'),'R$ 501.1M',true)}
-        <div class="fi-sub" contenteditable="${admin}" data-field="fin.rev.sub"
-          onblur="if(isAdmin()){UI[this.dataset.field]=this.innerText;saveUI();}"
+        <div class="fi-sub" contenteditable="${admin}" data-field="fin.rev.sub" data-orig="${esc(gt('fin.rev.sub','= 429.3 + 71.8'))}"
+          onblur="if(isAdmin()&&this.innerText!==this.dataset.orig){UI[this.dataset.field]=this.innerText;saveUI();}"
           style="${admin?'outline:none;border-bottom:1px dashed #cbd5e1':''}">${gt('fin.rev.sub','= 429.3 + 71.8')}</div>
       </div>
       <div class="fin-item">
@@ -1975,11 +1974,14 @@ function saveFinEdit(){
 }
 function cancelFinEdit(){S.landingEdit=0;renderLanding();}
 function saveFinCe(el,id){
-  if(!isAdmin()){alert('[진단] isAdmin() = false — 저장 안 됨');return;}
-  const oldVal=UI[id];  // 이전 값 캡처 (번역캐시 삭제용)
+  if(!isAdmin())return;
+  // 260716 발견: blur 이벤트가 사용자가 실제로 아무것도 안 바꿨을 때도 (렌더/포커스 이동 등으로) 발생할 수 있는데,
+  // 예전엔 이때도 무조건 저장해버려서 방금 저장된 새 값이 "원래 기본값"으로 덮어써지는 버그가 있었음.
+  // 이제는 렌더 당시 원문(data-orig)과 실제로 다를 때만 저장한다.
   const val=el.innerText.trim();
+  if(val===el.dataset.orig)return; // 실제 변경 없음 → 저장 스킵
+  const oldVal=UI[id];  // 이전 값 캡처 (번역캐시 삭제용)
   UI[id]=val;saveUI();
-  alert('[진단] UI["'+id+'"] = "'+val+'" 로 설정하고 서버 전송을 시작했어요');
   // 이전 값의 번역캐시 삭제 (새 값은 아직 번역 안됨)
   if(oldVal&&S.translations){Object.keys(S.translations).forEach(l=>delete S.translations[l][oldVal]);}
 }
