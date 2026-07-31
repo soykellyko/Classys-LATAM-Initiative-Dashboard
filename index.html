@@ -970,6 +970,35 @@ function deleteRootKpi(cid, idx){
   S.data[cid].kpis.splice(idx,1);
   save();renderCat(cid);
 }
+// ── 섹션/액션/서브액션 삭제 (260731 도입) — KPI 카드와 동일한 정책: 관리자는 전부, 일반 사용자는 본인이 추가한 것만 ──
+function _canManage(item){
+  if(isAdmin())return true;
+  if(!item||!item.custom||!item.addedBy||!S.user)return false;
+  return item.addedBy===S.user.email||item.addedBy===S.user.name;
+}
+function deleteSection(cid,sIdx){
+  const sec=S.data[cid].sections[sIdx]; if(!sec)return;
+  if(!_canManage(sec)){alert('삭제 권한이 없습니다. 본인이 추가한 섹션만 삭제할 수 있어요.');return;}
+  if(!confirm('이 섹션을 삭제하시겠습니까? 하위 액션도 모두 함께 삭제됩니다.'))return;
+  S.data[cid].sections.splice(sIdx,1);
+  save();renderCat(cid);
+}
+function deleteAction(cid,sIdx,aIdx){
+  const sec=S.data[cid].sections[sIdx]; if(!sec)return;
+  const act=sec.actions[aIdx]; if(!act)return;
+  if(!_canManage(act)){alert('삭제 권한이 없습니다. 본인이 추가한 액션만 삭제할 수 있어요.');return;}
+  if(!confirm('이 액션을 삭제하시겠습니까?'))return;
+  sec.actions.splice(aIdx,1);
+  save();renderCat(cid);
+}
+function deleteSubAction(cid,sIdx,aIdx,saIdx){
+  const act=S.data[cid].sections[sIdx]?.actions[aIdx]; if(!act||!act.subActions)return;
+  const sub=act.subActions[saIdx]; if(!sub)return;
+  if(!_canManage(sub)){alert('삭제 권한이 없습니다. 본인이 추가한 서브액션만 삭제할 수 있어요.');return;}
+  if(!confirm('이 서브액션을 삭제하시겠습니까?'))return;
+  act.subActions.splice(saIdx,1);
+  save();renderCat(cid);
+}
 // ── Country navigation ─────────────────────────────────────────────────
 function goCountry(c){
   S.country=c;
@@ -1330,7 +1359,8 @@ function renderCat(cid){
             const secTitleEl=isAdmin()&&isEdit
               ?`<span class="adm-editable" onclick="event.stopPropagation();adminEditModal('섹션 제목',S.data['${cid}'].sections[${sIdx}].title,v=>{syncEditFieldsToData('${cid}');S.data['${cid}'].sections[${sIdx}].title=v;logChange('${secTitleFk}');save();renderCat('${cid}');})" title="${T('클릭하여 제목 수정 (관리자)')}">${esc(t)} <span style="font-size:10px;color:#93c5fd">✎</span></span>`
               :esc(t);
-            tbody+=`<td class="tc-title ${changedCls(secTitleFk)}"${rsAttr}${changedTitle(secTitleFk)}><b>${cid.replace('cat','')+'-'+sec.id}</b>  ${secTitleEl}${sub}</td>`;
+            const secDelBtn=(isEdit&&_canManage(sec))?`<button onclick="event.stopPropagation();deleteSection('${cid}',${sIdx})" style="margin-left:8px;background:none;border:none;color:#dc2626;cursor:pointer;font-size:12px;vertical-align:middle" title="${T('섹션 삭제')}">🗑</button>`:'';
+            tbody+=`<td class="tc-title ${changedCls(secTitleFk)}"${rsAttr}${changedTitle(secTitleFk)}><b>${cid.replace('cat','')+'-'+sec.id}</b>  ${secTitleEl}${sub}${secDelBtn}</td>`;
           } else if(c.k==='owner'){
             const secOwnerFk=`${cid}.sec.${sIdx}.owner`;
             const secOwnerEl=isAdmin()&&isEdit
@@ -1410,7 +1440,8 @@ function renderCat(cid){
               ?`<span class="adm-editable" onclick="event.stopPropagation();adminEditModal('액션 제목',S.data['${cid}'].sections[${sIdx}].actions[${aIdx}].title,v=>{syncEditFieldsToData('${cid}');S.data['${cid}'].sections[${sIdx}].actions[${aIdx}].title=v;logChange('${cid}.${sIdx}.${aIdx}.title');save();renderCat('${cid}');})" title="${T('클릭하여 수정 (관리자)')}">${esc(t)} <span style="font-size:10px;color:#86efac">✎</span></span>`
               :esc(t);
             const subnote=act.subnote?`<br><small style="color:#64748b;font-size:9px;font-style:italic">${esc(act.subnote)}</small>`:'';
-            tbody+=`<td class="tc-title ${changedCls(titleFk)}"${changedTitle(titleFk)}>${actTitleEl}${sub}${subnote}</td>`;
+            const actDelBtn=(isEdit&&_canManage(act))?`<button onclick="event.stopPropagation();deleteAction('${cid}',${sIdx},${aIdx})" style="margin-left:8px;background:none;border:none;color:#dc2626;cursor:pointer;font-size:11px;vertical-align:middle" title="${T('액션 삭제')}">🗑</button>`:'';
+            tbody+=`<td class="tc-title ${changedCls(titleFk)}"${changedTitle(titleFk)}>${actTitleEl}${sub}${subnote}${actDelBtn}</td>`;
           } else if(c.k==='owner'){
             const fk=baseKey+'.owner';
             if(isEdit){
@@ -1480,7 +1511,8 @@ function renderCat(cid){
                 const subTitleEl=isAdmin()&&isEdit
                   ?`<span class="adm-editable" onclick="event.stopPropagation();adminEditModal('서브액션 제목',S.data['${cid}'].sections[${sIdx}].actions[${aIdx}].subActions[${saIdx}].title,v=>{syncEditFieldsToData('${cid}');S.data['${cid}'].sections[${sIdx}].actions[${aIdx}].subActions[${saIdx}].title=v;logChange('${subTitleFk}');save();renderCat('${cid}');})">${esc(t)} <span style="font-size:10px;color:#86efac">✎</span></span>`
                   :esc(t);
-                tbody+=`<td class="tc-title ${changedCls(subTitleFk)}" style="padding-left:28px;color:#64748b"${changedTitle(subTitleFk)}>↳ ${subTitleEl}${s2}</td>`;
+                const subDelBtn=(isEdit&&_canManage(sub))?`<button onclick="event.stopPropagation();deleteSubAction('${cid}',${sIdx},${aIdx},${saIdx})" style="margin-left:8px;background:none;border:none;color:#dc2626;cursor:pointer;font-size:10px;vertical-align:middle" title="${T('서브액션 삭제')}">🗑</button>`:'';
+                tbody+=`<td class="tc-title ${changedCls(subTitleFk)}" style="padding-left:28px;color:#64748b"${changedTitle(subTitleFk)}>↳ ${subTitleEl}${s2}${subDelBtn}</td>`;
               } else if(c.k==='owner'){
                 const fk=subBaseKey+'.owner';
                 if(isEdit){
@@ -1681,7 +1713,7 @@ function toggleCol(k,cid){
 
 // ── Add Section / Action Modals ──────────────────────────────────────────
 function addSectionModal(cid){
-  if(!isAdmin())return;
+  if(!S.user){alert(T('로그인이 필요합니다.'));return;}
   const ex=document.getElementById('adm-modal-overlay');if(ex)ex.remove();
   const ov=document.createElement('div');ov.id='adm-modal-overlay';
   ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:8000;display:flex;align-items:center;justify-content:center';
@@ -1716,14 +1748,16 @@ function confirmAddSection(cid){
   const newId=String(maxId+1);
   const fullTitle=sub?title+'\n('+sub+')':title;
   secs.push({id:newId,title:fullTitle,owner:owner||'TBD',due:due||"FY '26",status:'🟡 AMBER',
-    kpis:[{name:'KPI — TBD',target:'TBD',actual:'TBD',note:'',due:''}],actions:[]});
+    kpis:[{name:'KPI — TBD',target:'TBD',actual:'TBD',note:'',due:''}],actions:[],
+    custom:true,addedBy:(S.user&&(S.user.email||S.user.name))||'익명'});
   const newSIdx=secs.length-1;
   if(!S.expanded[cid])S.expanded[cid]={};
   S.expanded[cid][newSIdx]=true;
+  logChange(`${cid}.sec.${newSIdx}.title`); // 260731: 신규 추가 섹션도 48h 하이라이트 되도록
   save();document.getElementById('adm-modal-overlay').remove();renderCat(cid);
 }
 function addActionModal(cid,sIdx){
-  if(!isAdmin())return;
+  if(!S.user){alert(T('로그인이 필요합니다.'));return;}
   const ex=document.getElementById('adm-modal-overlay');if(ex)ex.remove();
   const sec=S.data[cid].sections[sIdx];
   const catNum=cid.replace('cat','');
@@ -1765,13 +1799,14 @@ function confirmAddAction(cid,sIdx){
   const fullTitle=sub?title+'\n('+sub+')':title;
   sec.actions.push({num:nextNum,title:fullTitle,src:src||'',owner:owner||'TBD',
     due:due||'TBD',status:'시작 전',comment:'',type:'act',
-    monthly:{jul:'',aug:'',sep:'',oct:'',nov:'',dec:''}});
+    monthly:{jul:'',aug:'',sep:'',oct:'',nov:'',dec:''},
+    custom:true,addedBy:(S.user&&(S.user.email||S.user.name))||'익명'});
   logChange(`${cid}.${sIdx}.${sec.actions.length-1}.title`);
   save();document.getElementById('adm-modal-overlay').remove();renderCat(cid);
 }
 
 function addSubActionModal(cid,sIdx,aIdx){
-  if(!isAdmin())return;
+  if(!S.user){alert(T('로그인이 필요합니다.'));return;}
   const ex=document.getElementById('adm-modal-overlay');if(ex)ex.remove();
   const sec=S.data[cid].sections[sIdx];
   const act=sec.actions[aIdx];
@@ -1816,7 +1851,9 @@ function confirmAddSubAction(cid,sIdx,aIdx){
   const fullTitle=sub?title+'\n('+sub+')':title;
   act.subActions.push({num:nextNum,title:fullTitle,src:src||'',owner:owner||'TBD',
     due:due||'TBD',status:'시작 전',comment:'',type:'sub',
-    monthly:{jul:'',aug:'',sep:'',oct:'',nov:'',dec:''}});
+    monthly:{jul:'',aug:'',sep:'',oct:'',nov:'',dec:''},
+    custom:true,addedBy:(S.user&&(S.user.email||S.user.name))||'익명'});
+  logChange(`${cid}.${sIdx}.${aIdx}.sub.${act.subActions.length-1}.title`); // 260731: 신규 추가 서브액션도 48h 하이라이트 되도록
   save();document.getElementById('adm-modal-overlay').remove();renderCat(cid);
 }
 async function enterEdit(cid){
