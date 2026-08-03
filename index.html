@@ -1022,6 +1022,9 @@ function changedTitle(fk){if(!isFresh(fk))return '';const _n=changedBy(fk).repla
 
 // ── Utils ──────────────────────────────────────────────────────────
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+// 섹션 번호 라벨: 보통은 "{카테고리}-{id}" (예: 4-5)로 자동 조합하지만,
+// sec.id 자체에 하이픈이 들어있으면(예: "5-0" — 새 조직 구분용, 260803) 그 값을 그대로 씀.
+function secLabelOf(cid,sec){return (sec.id&&String(sec.id).includes('-'))?sec.id:(cid.replace('cat','')+'-'+sec.id);}
 // ⟦...⟧로 감싼 구간은 "베이스라인(신규 추가)" 표시 — 화면엔 파란 볼드로, 엑셀/PPT엔 마커만 제거한 평문으로 나감.
 function kpiFmt(s){return esc(String(s||'')).replace(/⟦([^⟧]*)⟧/g,'<b style="color:#2563eb">$1</b>');}
 function kpiPlain(s){return String(s||'').replace(/⟦([^⟧]*)⟧/g,'$1');}
@@ -1163,7 +1166,7 @@ function renderLanding(){
     const isOpen=S.catKpiOpen[cid];
     let rows='';
     cat.sections.forEach(sec=>{
-      const secLabel=cid.replace('cat','')+'-'+sec.id;
+      const secLabel=secLabelOf(cid,sec);
       rows+=`<tr class="kpi-sec-header"><td colspan="4" style="padding:7px 10px">${secLabel}: ${esc(sec.title.split('\n')[0])}</td></tr>`;
       sec.kpis.forEach(kpi=>{
         rows+=`<tr>
@@ -1360,7 +1363,7 @@ function renderCat(cid){
               ?`<span class="adm-editable" onclick="event.stopPropagation();adminEditModal('섹션 제목',S.data['${cid}'].sections[${sIdx}].title,v=>{syncEditFieldsToData('${cid}');S.data['${cid}'].sections[${sIdx}].title=v;logChange('${secTitleFk}');save();renderCat('${cid}');})" title="${T('클릭하여 제목 수정 (관리자)')}">${esc(t)} <span style="font-size:10px;color:#93c5fd">✎</span></span>`
               :esc(t);
             const secDelBtn=(isEdit&&_canManage(sec))?`<button onclick="event.stopPropagation();deleteSection('${cid}',${sIdx})" style="margin-left:8px;background:none;border:none;color:#dc2626;cursor:pointer;font-size:12px;vertical-align:middle" title="${T('섹션 삭제')}">🗑</button>`:'';
-            tbody+=`<td class="tc-title ${changedCls(secTitleFk)}"${rsAttr}${changedTitle(secTitleFk)}><b>${cid.replace('cat','')+'-'+sec.id}</b>  ${secTitleEl}${sub}${secDelBtn}</td>`;
+            tbody+=`<td class="tc-title ${changedCls(secTitleFk)}"${rsAttr}${changedTitle(secTitleFk)}><b>${secLabelOf(cid,sec)}</b>  ${secTitleEl}${sub}${secDelBtn}</td>`;
           } else if(c.k==='owner'){
             const secOwnerFk=`${cid}.sec.${sIdx}.owner`;
             const secOwnerEl=isAdmin()&&isEdit
@@ -1760,8 +1763,7 @@ function addActionModal(cid,sIdx){
   if(!S.user){alert(T('로그인이 필요합니다.'));return;}
   const ex=document.getElementById('adm-modal-overlay');if(ex)ex.remove();
   const sec=S.data[cid].sections[sIdx];
-  const catNum=cid.replace('cat','');
-  const secLabel=(catNum.match(/^\d+$/)?catNum:cid)+'-'+sec.id;
+  const secLabel=secLabelOf(cid,sec);
   const ov=document.createElement('div');ov.id='adm-modal-overlay';
   ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:8000;display:flex;align-items:center;justify-content:center';
   ov.innerHTML=`<div style="background:#fff;border-radius:16px;padding:32px;width:600px;max-width:94vw;box-shadow:0 32px 80px rgba(0,0,0,.4)">
@@ -1810,8 +1812,7 @@ function addSubActionModal(cid,sIdx,aIdx){
   const ex=document.getElementById('adm-modal-overlay');if(ex)ex.remove();
   const sec=S.data[cid].sections[sIdx];
   const act=sec.actions[aIdx];
-  const catNum=cid.replace('cat','');
-  const secLabel=(catNum.match(/^\d+$/)?catNum:cid)+'-'+sec.id;
+  const secLabel=secLabelOf(cid,sec);
   const ov=document.createElement('div');ov.id='adm-modal-overlay';
   ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:8000;display:flex;align-items:center;justify-content:center';
   ov.innerHTML=`<div style="background:#fff;border-radius:16px;padding:32px;width:600px;max-width:94vw;box-shadow:0 32px 80px rgba(0,0,0,.4)">
@@ -2635,7 +2636,7 @@ async function downloadExcel(lang){
 
     // ── 섹션 + 액션 ──────────────────────────────────────────
     cat.sections.forEach(sec=>{
-      const secId=cid.replace('cat','')+'-'+sec.id;
+      const secId=secLabelOf(cid,sec);
       const ss=calcSecStatus(sec.actions);
 
       const secTitleTxt=tr(sec.title.split('\n')[0].replace(/^\d+-\d+\.\s*/,''));
@@ -2855,7 +2856,7 @@ async function downloadPPT(){
   function sectionRowsForTable(cat,cid){
     const rows=[];
     cat.sections.forEach(sec=>{
-      const secId=cid.replace('cat','')+'-'+sec.id;
+      const secId=secLabelOf(cid,sec);
       const ss=calcSecStatus(sec.actions);
       rows.push({kind:'act',num:secId,title:tr(sec.title.split('\n')[0].replace(/^\d+-\d+\.\s*/,'')),owner:tr(sec.owner||''),due:sec.due||'',status:ss.text,comment:''});
     });
@@ -3312,6 +3313,30 @@ function applyChangesConfirm(){
   document.getElementById('changes-preview-modal')?.remove();
   renderPendingBanner();
 }
+// path(실제 데이터 경로, 예: ['cat2','sections',7,'actions',0,'title'])를
+// 화면 렌더링이 실제로 조회하는 changelog 축약 키(예: 'cat2.7.0.title')로 변환.
+// 260803: path.join('.')을 그대로 logChange에 쓰면 changedCls()가 찾는 키와 달라서
+// 가져오기로 반영한 항목은 48h 하이라이트가 전혀 표시되지 않던 버그를 수정.
+function pathToChangeKey(path){
+  const cid=path[0];
+  if(path[1]==='kpis')return path.join('.'); // 루트 KPI는 축약 없이 그대로 사용
+  if(path[1]==='sections'){
+    const sIdx=path[2], field=path[3];
+    if(field===undefined)return `${cid}.sec.${sIdx}.title`; // 섹션 통째로 추가 → 제목에 하이라이트
+    if(field==='kpis')return `${cid}.sec.${sIdx}.kpi.${path[4]}.${path[5]}`;
+    if(field==='actions'){
+      const aIdx=path[4], afield=path[5];
+      if(afield===undefined)return `${cid}.${sIdx}.${aIdx}.title`; // 액션 통째로 추가
+      if(afield==='subActions'){
+        const saIdx=path[6], sfield=path[7];
+        return sfield===undefined?`${cid}.${sIdx}.${aIdx}.sub.${saIdx}.title`:`${cid}.${sIdx}.${aIdx}.sub.${saIdx}.${sfield}`;
+      }
+      return `${cid}.${sIdx}.${aIdx}.${afield}`;
+    }
+    return `${cid}.sec.${sIdx}.${field}`;
+  }
+  return path.join('.');
+}
 function _doApplyChanges(pkg){
   let applied=0;
   pkg.changes.forEach(ch=>{
@@ -3325,7 +3350,7 @@ function _doApplyChanges(pkg){
       const key=path[path.length-1];
       if(String(obj[key]||'')!==String(ch.new??'')){
         obj[key]=ch.new;
-        logChange(path.join('.'));
+        logChange(pathToChangeKey(path));
         applied++;
       }
     }catch(e){}
