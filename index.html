@@ -258,7 +258,15 @@ td,th{padding:9px 11px;vertical-align:middle}
   <div class="country-tabs"><div class="country-tab country-tab-active" onclick="goCountry('brazil')"><span class="cflag cflag-br" title="Brazil" style="padding:0;overflow:hidden"><svg viewBox="0 0 26 17" width="26" height="17" style="display:block"><rect width="26" height="17" fill="#009c3b"></rect><polygon points="13,2 24,8.5 13,15 2,8.5" fill="#ffd700"></polygon><circle cx="13" cy="8.5" r="4.5" fill="#002776"></circle><text x="13" y="12" text-anchor="middle" font-size="5" font-weight="900" fill="#fff" font-family="Arial,sans-serif">BR</text></svg></span> Brazil</div><div class="country-tab " onclick="goCountry('colombia')"><span class="cflag cflag-co">CO</span> Colombia</div><div class="country-tab " onclick="goCountry('argentina')"><span class="cflag cflag-ar">AR</span> Argentina</div></div>
   <div class="tabs" style="display:flex;padding:0 28px;border-top:1px solid rgba(255,255,255,.08);overflow-x:auto"><div ondblclick="event.stopPropagation();editLabel('tab.landing','Overview')" class="tab  adm-edit" data-page="landing" onclick="go('landing')">📊 Overview</div><div ondblclick="event.stopPropagation();editLabel('tab.cat1','Cat 1: Sales')" class="tab active adm-edit" data-page="cat1" onclick="go('cat1')">📈 Cat 1: Sales</div><div ondblclick="event.stopPropagation();editLabel('tab.cat2','Cat 2: CS/TS')" class="tab  adm-edit" data-page="cat2" onclick="go('cat2')">🤝 Cat 2: CS/TS</div><div ondblclick="event.stopPropagation();editLabel('tab.cat3','Cat 3: Cash Flow')" class="tab  adm-edit" data-page="cat3" onclick="go('cat3')">💰 Cat 3: Cash Flow</div><div ondblclick="event.stopPropagation();editLabel('tab.cat4','Cat 4: Corp Ops')" class="tab  adm-edit" data-page="cat4" onclick="go('cat4')">🏗 Cat 4: Corp Ops</div></div>
 </div>
-<div id="main"><div id="page-landing" class="page" style="display:none"></div><div id="page-cat1" class="page" style="display:none"></div><div id="page-cat2" class="page" style="display:none"></div><div id="page-cat3" class="page" style="display:none"></div><div id="page-cat4" class="page" style="display:none"></div><div id="page-colombia" class="page" style="display:none"></div><div id="page-argentina" class="page" style="display:none"></div>
+<div id="main">
+  <div id="page-landing" class="page" style="display:none"></div>
+  <div id="page-cat1" class="page" style="display:none"></div>
+  <div id="page-cat2" class="page" style="display:none"></div>
+  <div id="page-cat3" class="page" style="display:none"></div>
+  <div id="page-cat4" class="page" style="display:none"></div>
+  <div id="page-colombia" class="page" style="display:none"></div>
+  <div id="page-argentina" class="page" style="display:none"></div>
+</div>
 <script>
 
 // ── LANDING (Dashboard summary) ──────────────────────────────────────────
@@ -310,7 +318,7 @@ let S={page:'landing',country:'brazil',user:null,data:null,lang:'ko',
   issueEdit:{},
   activeReply:null
 };
-let UI={"fin-rev-target": "", "fin-ebitda-target": "", "header.title": "🏆 Classys LATAM — FY'26 Turnaround Initiative Dashboard", "fin.rev.sub": ""};  // label overrides (admin edits)
+let UI={"fin-rev-target":"","fin-ebitda-target":"","header.title":"🏆 Classys LATAM — FY'26 Turnaround Initiative Dashboard","fin.rev.sub":""};  // label overrides (admin edits)
 // PPT 표지 슬라이드 배경 (켈리가 준 이니셔티브 reporting 템플릿 1페이지 배경을 그대로 추출한 이미지, 축소압축본)
 const PPT_TITLE_BG='data:image/jpeg;base64,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';
 
@@ -397,12 +405,18 @@ async function syncFromServer(){
       await pushAllChangelog();
       await pushUI();
     }else{
-      let uiFound=false;
+      let uiFound=false, trFound=false;
       rows.forEach(r=>{
         if(r.key==='_ui_labels'){Object.assign(UI,r.data||{});uiFound=true;}
+        else if(r.key==='_translations'){
+          // 서버 번역 캐시를 기본으로 두고, 이 브라우저에만 있던 로컬 캐시는 덮어쓰지 않고 병합(로컬이 우선)
+          Object.keys(r.data||{}).forEach(l=>{S.translations[l]=Object.assign({},r.data[l],S.translations[l]||{});});
+          trFound=true;
+        }
         else{S.data[r.key]=r.data;_lastHistJson[r.key]=JSON.stringify(r.data);}
       });
       if(!uiFound)await pushUI(); // 서버에 아직 UI 라벨 행이 없으면(과거 버전) 지금 값으로 시딩
+      if(!trFound&&S.translations&&Object.keys(S.translations).length)await pushTranslations();
       // INIT_DATA엔 있는데 서버엔 아직 없는 카테고리(신규 국가 등)는 추가하고 서버에도 반영
       let needSeed=false;
       Object.keys(INIT_DATA).forEach(k=>{if(!S.data[k]){S.data[k]=JSON.parse(JSON.stringify(INIT_DATA[k]));needSeed=true;}});
@@ -417,6 +431,7 @@ async function syncFromServer(){
     localStorage.setItem('cb_data',JSON.stringify(S.data));
     localStorage.setItem('cb_cl',JSON.stringify(S.changelog));
     localStorage.setItem('cb_ui',JSON.stringify(UI));
+    localStorage.setItem('cb_lang',JSON.stringify({v:2,lang:S.lang,cache:S.translations||{}}));
   }catch(e){
     console.error('syncFromServer failed, 로컬 캐시로 표시',e);
     notifySyncFail();
@@ -432,6 +447,10 @@ function subscribeRealtime(){
         if(payload.new.key==='_ui_labels'){
           Object.assign(UI,payload.new.data||{});
           localStorage.setItem('cb_ui',JSON.stringify(UI));
+        }else if(payload.new.key==='_translations'){
+          Object.keys(payload.new.data||{}).forEach(l=>{S.translations[l]=Object.assign({},S.translations[l]||{},payload.new.data[l]);});
+          localStorage.setItem('cb_lang',JSON.stringify({v:2,lang:S.lang,cache:S.translations||{}}));
+          if(S.lang)applyTranslationsFromCache();
         }else{
           S.data[payload.new.key]=payload.new.data;
           localStorage.setItem('cb_data',JSON.stringify(S.data));
@@ -459,6 +478,24 @@ async function pushUI(){
     );
     if(error)console.error('pushUI error',error);
   }catch(e){console.error('pushUI exception',e);}
+}
+// 260803 발견: 번역 캐시(S.translations)가 각 브라우저 localStorage에만 저장되고 Supabase에는 전혀 올라가지 않았음.
+// 그래서 한 사람이 "번역 새로고침"을 눌러도 다른 팀원 화면에는 반영이 안 되고, 각자 따로 눌러야 했음.
+// _ui_labels와 동일한 패턴으로 app_data에 '_translations' 특수 행으로 동기화한다.
+let _pushTrPending=false;
+function pushTranslationsDebounced(){
+  if(_pushTrPending)return;
+  _pushTrPending=true;
+  setTimeout(()=>{_pushTrPending=false;pushTranslations();},1500);
+}
+async function pushTranslations(){
+  try{
+    const {error}=await sbc.from('app_data').upsert(
+      [{key:'_translations',data:S.translations||{},updated_at:new Date().toISOString(),updated_by:(S.user&&S.user.name)||'system'}],
+      {onConflict:'key'}
+    );
+    if(error)console.error('pushTranslations error',error);
+  }catch(e){console.error('pushTranslations exception',e);}
 }
 function saveUser(){localStorage.setItem('cb_user',JSON.stringify(S.user));}
 // Admin helpers
@@ -526,12 +563,17 @@ async function saveHTML(){
   URL.revokeObjectURL(url);
 }
 // ── Translation (Google Translate free API) ────────────────────────────
-if(!S.translations)S.translations={en:{},pt:{},es:{}};
+if(!S.translations)S.translations={ko:{},en:{},pt:{},es:{}};
 async function gTranslate(text,tl){
-  if(!text||!text.trim()||tl==='ko')return text;
+  // 260803: 'ko'도 이제 번역 대상 — 포/영/스페인어로 입력된 원문을 한국어로도 자동번역해서
+  // 누가 어떤 언어로 입력하든 4개 언어 화면에서 다 보이게 함(한 번 번역되면 캐시/Supabase에 남아 재사용됨).
+  if(!text||!text.trim())return text;
   const q=encodeURIComponent(text);
   const gtxUrl=`https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${tl}&dt=t&q=${q}`;
-  const mmUrl=`https://api.mymemory.translated.net/get?q=${q}&langpair=ko|${tl}`;
+  // 260803: mymemory fallback은 langpair를 명시해야 해서, 원문이 한국어인지 아닌지(예: 엑셀로 들어온 영어 원문)를
+  // 감지해 소스 언어를 맞춰준다 — 하드코딩된 'ko'로는 영어 원문 번역이 항상 실패했음.
+  const srcLang=/[가-힣]/.test(text)?'ko':'en';
+  const mmUrl=`https://api.mymemory.translated.net/get?q=${q}&langpair=${srcLang}|${tl}`;
   const parseGtx=d=>{try{const o=d[0].map(x=>x[0]).join('');return o&&o!==text?o:null;}catch(_){return null;}};
   const parseMM=d=>{try{const o=d.responseData?.translatedText;return d.responseStatus===200&&o&&o!==text?o:null;}catch(_){return null;}};
   // Method A: fetch (works on http://)
@@ -558,9 +600,20 @@ async function gTranslate(text,tl){
   r=await tryJsonp(mmUrl,parseMM); if(r)return r;
   return text;
 }
+// 260803: 문구 하나가 번역이 필요한지 판단하는 공통 규칙 — 화면 언어(tl)에 따라 다름.
+//  - 'ko'  : 한글이 하나도 없고 영문자가 있는 문구만(순수 외국어 원문 — 예: 엑셀 원본, 브라질 팀이 입력한 포르투갈어).
+//            한글이 섞여있으면(예: "Skill Matrix 구축") 이미 읁을 수 있으니 건너뜀.
+//  - 'en'  : 한글이 섞인 문구만(원래 영어인 텍스트는 그대로 둠).
+//  - 'pt'/'es': 원문이 한글이든 영어든 상관없이 번역 대상.
+function needsTranslation(t,tl){
+  if(!t||t.length<2)return false;
+  if(tl==='ko')return !/[가-힣]/.test(t)&&/[a-zA-Z]/.test(t);
+  if(tl==='en')return /[가-힣]/.test(t);
+  return /[a-zA-Z가-힣]/.test(t);
+}
 async function applyTranslations(){
-  if(S.lang==='ko')return;
   const tl=S.lang;
+  if(!tl)return;
   if(!S.translations)S.translations={};
   const cache=S.translations[tl]||(S.translations[tl]={});
   const main=document.getElementById('main');
@@ -572,7 +625,7 @@ async function applyTranslations(){
   const walk=(node)=>{
     if(node.nodeType===3){
       const t=(node.textContent||'').trim();
-      if(t&&t.length>1&&/[가-힣]/.test(t)&&node.parentElement&&!SKIP.has(node.parentElement.tagName))
+      if(t&&node.parentElement&&!SKIP.has(node.parentElement.tagName)&&needsTranslation(t,tl))
         items.push({node,orig:t});
     } else if(node.nodeType===1&&!SKIP.has(node.tagName)){
       node.childNodes.forEach(c=>walk(c));
@@ -602,6 +655,7 @@ async function applyTranslations(){
       if(r&&r!==t)cache[t]=r;
     }));
   }
+  pushTranslationsDebounced(); // 260803: 새로 번역된 캐시를 다른 팀원 화면에도 공유
   if(S.lang!==tl)return;
 
   // 새로 번역된 것을 현재 DOM에 적용 (stale 노드 아닌 현재 DOM에)
@@ -703,10 +757,12 @@ function refreshTranslation(){
   ind.innerHTML='<span style="animation:spin 1s linear infinite;display:inline-block">⟳</span> 번역 새로고침 중...';
   document.body.appendChild(ind);
   (async()=>{
-    for(const l of ['en','pt','es']){
+    // 260803: 'ko'도 대상에 포함 — 포/영/스페인어로 입력된 원문을 한국어로도 번역해서 캐시에 채움
+    for(const l of ['ko','en','pt','es']){
       try{await preTranslateAllData(l);}catch(_){}
     }
-    if(S.lang&&S.lang!=='ko'){
+    pushTranslationsDebounced();
+    if(S.lang){
       renderPage(S.page);
       try{await applyTranslations();}catch(_){}
     }
@@ -723,10 +779,10 @@ function refreshTranslation(){
 
 // ── Pre-translate all S.data strings for a given lang (for Excel export) ─
 async function preTranslateAllData(lang){
-  if(!lang||lang==='ko')return;
+  if(!lang)return;
   const cache=S.translations[lang]||(S.translations[lang]={});
   const toTr=new Set();
-  const addStr=s=>{if(s&&String(s).trim())String(s).split('\n').forEach(l=>{l=l.trim();if(l&&/[가-힣]/.test(l))toTr.add(l);});};
+  const addStr=s=>{if(s&&String(s).trim())String(s).split('\n').forEach(l=>{l=l.trim();if(l&&needsTranslation(l,lang))toTr.add(l);});};
   Object.values(S.data).forEach(cat=>{
     if(!cat)return;
     addStr(cat.title);addStr(cat.cxTitle);
@@ -751,11 +807,12 @@ async function preTranslateAllData(lang){
     if(i+5<missing.length)await new Promise(r=>setTimeout(r,300));
   }
   save(); // persist cache to localStorage
+  pushTranslationsDebounced(); // 260803: 새로 번역된 캐시를 다른 팀원 화면에도 공유
 }
 
 // ── Excel/PPT 내보내기 전 번역 상태 토스트 ──────────────────────────────
 async function ensureTranslatedForExport(lang){
-  if(!lang||lang==='ko')return;
+  if(!lang)return;
   const ind=document.createElement('div');
   ind.id='export-trans-ind';
   ind.style.cssText='position:fixed;bottom:20px;right:20px;background:#0f172a;color:#fff;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.3)';
@@ -771,7 +828,7 @@ function setLang(l){
   S.lang=l;
   document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('lang-active',b.dataset.lang===l));
   renderHeader(); // 헤더의 고정 문구(저장/내보내기/가져오기/툴팁 등)도 즉시 선택한 언어로 다시 그림
-  if(l!=='ko'){
+  if(l){ // 260803: 'ko' 포함 — 외국어로 입력된 원문(포/영/스페인어)을 한국어 화면에서도 번역해서 보여줘야 함
     // 모든 섹션 임시 펼침 → 전체 DOM 생성 → 번역(캐시 채움) → 원상 복원
     const cids=['cat1','cat2','cat3','cat4'];
     const savedExp={};
@@ -825,8 +882,10 @@ function setLang(l){
 }
 
 // ── Admin Edit Modal (centered popup) ─────────────────────────────────
-function adminEditModal(label, value, saveFn){
-  if(!isAdmin())return;
+function adminEditModal(label, value, saveFn, requireAdmin){
+  // 260803: requireAdmin=false로 넘기면(제목/기한 등 승인 사용자 전원 편집 허용 필드) 로그인만 확인.
+  if(requireAdmin===undefined)requireAdmin=true;
+  if(requireAdmin){if(!isAdmin())return;}else{if(!S.user)return;}
   const existing=document.getElementById('adm-modal-overlay');
   if(existing)existing.remove();
   const ov=document.createElement('div');
@@ -861,8 +920,9 @@ function _dueToISO(v){
   if(mi<0)return'';
   return `${m[3]}-${String(mi+1).padStart(2,'0')}-${String(+m[1]).padStart(2,'0')}`;
 }
-function adminEditDueModal(label, value, saveFn){
-  if(!isAdmin())return;
+function adminEditDueModal(label, value, saveFn, requireAdmin){
+  if(requireAdmin===undefined)requireAdmin=true;
+  if(requireAdmin){if(!isAdmin())return;}else{if(!S.user)return;}
   const existing=document.getElementById('adm-due-modal-overlay');
   if(existing)existing.remove();
   const iso=_dueToISO(value);
@@ -890,7 +950,7 @@ function adminEditDueModal(label, value, saveFn){
   };
   document.getElementById('adm-due-modal-text').onclick=()=>{
     ov.remove();
-    adminEditModal(label, value, saveFn);
+    adminEditModal(label, value, saveFn, requireAdmin);
   };
   ov.addEventListener('click',e=>{if(e.target===ov)ov.remove();});
 }
@@ -1010,7 +1070,7 @@ function goCountry(c){
     renderHeader();
     document.querySelectorAll('.page').forEach(p=>p.style.display='none');
     const el=document.getElementById('page-'+c);
-    if(el){el.style.display='block';renderPage(c);if(S.lang&&S.lang!=='ko')setTimeout(()=>applyTranslations(),100);}
+    if(el){el.style.display='block';renderPage(c);if(S.lang)setTimeout(()=>applyTranslations(),100);}
   }
 }
 function pruneLog(){const now=Date.now(),ttl=48*3600000;Object.keys(S.changelog).forEach(k=>{const e=S.changelog[k];const ts=e&&typeof e==='object'?e.ts:e;if(!ts||now-ts>ttl)delete S.changelog[k];});}
@@ -1093,7 +1153,7 @@ function bulletFocus(ta){
 
 // ── Nav ────────────────────────────────────────────────────────────
 function renderPage(pg){if(pg==='landing')renderLanding();else if(pg==='colombia')renderColombia();else if(pg==='argentina')renderArgentina();else renderCat(pg);}
-function go(pg){S.page=pg;save();renderHeader();document.querySelectorAll(".page").forEach(p=>p.style.display="none");const el=document.getElementById("page-"+pg);if(el){el.style.display="block";renderPage(pg);if(S.lang&&S.lang!=="ko"){applyTranslationsFromCache();setTimeout(()=>applyTranslations(),50);}}}
+function go(pg){S.page=pg;save();renderHeader();document.querySelectorAll(".page").forEach(p=>p.style.display="none");const el=document.getElementById("page-"+pg);if(el){el.style.display="block";renderPage(pg);if(S.lang){applyTranslationsFromCache();setTimeout(()=>applyTranslations(),50);}}}
 
 // ── Landing ────────────────────────────────────────────────────────
 function renderLanding(){
@@ -1359,8 +1419,8 @@ function renderCat(cid){
             const secTitleFk=`${cid}.sec.${sIdx}.title`;
             const t=sec.title.split('\n')[0].replace(/^\d+-\d+\.\s*/,'');
             const sub=sec.title.includes('\n')?`<small>${esc(sec.title.split('\n')[1]||'')}</small>`:'';
-            const secTitleEl=isAdmin()&&isEdit
-              ?`<span class="adm-editable" onclick="event.stopPropagation();adminEditModal('섹션 제목',S.data['${cid}'].sections[${sIdx}].title,v=>{syncEditFieldsToData('${cid}');S.data['${cid}'].sections[${sIdx}].title=v;logChange('${secTitleFk}');save();renderCat('${cid}');})" title="${T('클릭하여 제목 수정 (관리자)')}">${esc(t)} <span style="font-size:10px;color:#93c5fd">✎</span></span>`
+            const secTitleEl=isEdit
+              ?`<span class="adm-editable" onclick="event.stopPropagation();adminEditModal('섹션 제목',S.data['${cid}'].sections[${sIdx}].title,v=>{syncEditFieldsToData('${cid}');S.data['${cid}'].sections[${sIdx}].title=v;logChange('${secTitleFk}');save();renderCat('${cid}');},false)" title="${T('클릭하여 수정')}">${esc(t)} <span style="font-size:10px;color:#93c5fd">✎</span></span>`
               :esc(t);
             const secDelBtn=(isEdit&&_canManage(sec))?`<button onclick="event.stopPropagation();deleteSection('${cid}',${sIdx})" style="margin-left:8px;background:none;border:none;color:#dc2626;cursor:pointer;font-size:12px;vertical-align:middle" title="${T('섹션 삭제')}">🗑</button>`:'';
             tbody+=`<td class="tc-title ${changedCls(secTitleFk)}"${rsAttr}${changedTitle(secTitleFk)}><b>${secLabelOf(cid,sec)}</b>  ${secTitleEl}${sub}${secDelBtn}</td>`;
@@ -1380,9 +1440,9 @@ function renderCat(cid){
             const dueFk=N_KPI>1?`${kpiBaseKey}.due`:`${cid}.sec.${sIdx}.due`;
             if(isEdit&&N_KPI>1){
               tbody+=`<td class="tc-due"><input class="einput" data-kpi="${kpiBaseKey}.due" value="${esc(dv)}" placeholder="기한" style="width:68px"></td>`;
-            } else if(isAdmin()&&isEdit){
+            } else if(isEdit){
               const dueTarget=N_KPI>1?`S.data['${cid}'].sections[${sIdx}].kpis[${kIdx}].due`:`S.data['${cid}'].sections[${sIdx}].due`;
-              tbody+=`<td class="tc-due"><span class="adm-editable" onclick="event.stopPropagation();adminEditDueModal('기한',${dueTarget}||'',v=>{syncEditFieldsToData('${cid}');${dueTarget}=v;logChange('${dueFk}');save();renderCat('${cid}');})">${esc(dv)||'—'} <span style="font-size:10px;color:#fbbf24">✎</span></span></td>`;
+              tbody+=`<td class="tc-due"><span class="adm-editable" onclick="event.stopPropagation();adminEditDueModal('기한',${dueTarget}||'',v=>{syncEditFieldsToData('${cid}');${dueTarget}=v;logChange('${dueFk}');save();renderCat('${cid}');},false)">${esc(dv)||'—'} <span style="font-size:10px;color:#fbbf24">✎</span></span></td>`;
             } else {
               tbody+=`<td class="tc-due ${changedCls(dueFk)}"${changedTitle(dueFk)}>${esc(dv)}</td>`;
             }
@@ -1439,8 +1499,8 @@ function renderCat(cid){
             const titleFk=baseKey+'.title';
             const t=act.title.split('\n')[0];
             const sub=act.title.includes('\n')?`<small>${esc(act.title.split('\n')[1]||'')}</small>`:'';
-            const actTitleEl=isAdmin()&&isEdit
-              ?`<span class="adm-editable" onclick="event.stopPropagation();adminEditModal('액션 제목',S.data['${cid}'].sections[${sIdx}].actions[${aIdx}].title,v=>{syncEditFieldsToData('${cid}');S.data['${cid}'].sections[${sIdx}].actions[${aIdx}].title=v;logChange('${cid}.${sIdx}.${aIdx}.title');save();renderCat('${cid}');})" title="${T('클릭하여 수정 (관리자)')}">${esc(t)} <span style="font-size:10px;color:#86efac">✎</span></span>`
+            const actTitleEl=isEdit
+              ?`<span class="adm-editable" onclick="event.stopPropagation();adminEditModal('액션 제목',S.data['${cid}'].sections[${sIdx}].actions[${aIdx}].title,v=>{syncEditFieldsToData('${cid}');S.data['${cid}'].sections[${sIdx}].actions[${aIdx}].title=v;logChange('${cid}.${sIdx}.${aIdx}.title');save();renderCat('${cid}');},false)" title="${T('클릭하여 수정')}">${esc(t)} <span style="font-size:10px;color:#86efac">✎</span></span>`
               :esc(t);
             const subnote=act.subnote?`<br><small style="color:#64748b;font-size:9px;font-style:italic">${esc(act.subnote)}</small>`:'';
             const actDelBtn=(isEdit&&_canManage(act))?`<button onclick="event.stopPropagation();deleteAction('${cid}',${sIdx},${aIdx})" style="margin-left:8px;background:none;border:none;color:#dc2626;cursor:pointer;font-size:11px;vertical-align:middle" title="${T('액션 삭제')}">🗑</button>`:'';
@@ -1454,8 +1514,8 @@ function renderCat(cid){
             }
           } else if(c.k==='due'){
             const dueFk=baseKey+'.due';
-            if(isAdmin()&&isEdit){
-              tbody+=`<td class="tc-due"><span class="adm-editable" onclick="event.stopPropagation();adminEditDueModal('액션 기한',S.data['${cid}'].sections[${sIdx}].actions[${aIdx}].due||'',v=>{syncEditFieldsToData('${cid}');S.data['${cid}'].sections[${sIdx}].actions[${aIdx}].due=v;logChange('${cid}.${sIdx}.${aIdx}.due');save();renderCat('${cid}');})">${esc(act.due||'—')}<span style="font-size:9px;color:#fbbf24;margin-left:3px">✎</span></span></td>`;
+            if(isEdit){
+              tbody+=`<td class="tc-due"><span class="adm-editable" onclick="event.stopPropagation();adminEditDueModal('액션 기한',S.data['${cid}'].sections[${sIdx}].actions[${aIdx}].due||'',v=>{syncEditFieldsToData('${cid}');S.data['${cid}'].sections[${sIdx}].actions[${aIdx}].due=v;logChange('${cid}.${sIdx}.${aIdx}.due');save();renderCat('${cid}');},false)">${esc(act.due||'—')}<span style="font-size:9px;color:#fbbf24;margin-left:3px">✎</span></span></td>`;
             } else {
               tbody+=`<td class="tc-due ${changedCls(dueFk)}"${changedTitle(dueFk)}>${esc(act.due||'')}</td>`;
             }
@@ -1511,8 +1571,8 @@ function renderCat(cid){
                 const subTitleFk=subBaseKey+'.title';
                 const t=sub.title.split('\n')[0];
                 const s2=sub.title.includes('\n')?`<small>${esc(sub.title.split('\n')[1]||'')}</small>`:'';
-                const subTitleEl=isAdmin()&&isEdit
-                  ?`<span class="adm-editable" onclick="event.stopPropagation();adminEditModal('서브액션 제목',S.data['${cid}'].sections[${sIdx}].actions[${aIdx}].subActions[${saIdx}].title,v=>{syncEditFieldsToData('${cid}');S.data['${cid}'].sections[${sIdx}].actions[${aIdx}].subActions[${saIdx}].title=v;logChange('${subTitleFk}');save();renderCat('${cid}');})">${esc(t)} <span style="font-size:10px;color:#86efac">✎</span></span>`
+                const subTitleEl=isEdit
+                  ?`<span class="adm-editable" onclick="event.stopPropagation();adminEditModal('서브액션 제목',S.data['${cid}'].sections[${sIdx}].actions[${aIdx}].subActions[${saIdx}].title,v=>{syncEditFieldsToData('${cid}');S.data['${cid}'].sections[${sIdx}].actions[${aIdx}].subActions[${saIdx}].title=v;logChange('${subTitleFk}');save();renderCat('${cid}');},false)">${esc(t)} <span style="font-size:10px;color:#86efac">✎</span></span>`
                   :esc(t);
                 const subDelBtn=(isEdit&&_canManage(sub))?`<button onclick="event.stopPropagation();deleteSubAction('${cid}',${sIdx},${aIdx},${saIdx})" style="margin-left:8px;background:none;border:none;color:#dc2626;cursor:pointer;font-size:10px;vertical-align:middle" title="${T('서브액션 삭제')}">🗑</button>`:'';
                 tbody+=`<td class="tc-title ${changedCls(subTitleFk)}" style="padding-left:28px;color:#64748b"${changedTitle(subTitleFk)}>↳ ${subTitleEl}${s2}${subDelBtn}</td>`;
@@ -1525,8 +1585,8 @@ function renderCat(cid){
                 }
               } else if(c.k==='due'){
                 const fk=subBaseKey+'.due';
-                if(isAdmin()&&isEdit){
-                  tbody+=`<td class="tc-due"><span class="adm-editable" onclick="event.stopPropagation();adminEditDueModal('서브액션 기한',S.data['${cid}'].sections[${sIdx}].actions[${aIdx}].subActions[${saIdx}].due||'',v=>{syncEditFieldsToData('${cid}');S.data['${cid}'].sections[${sIdx}].actions[${aIdx}].subActions[${saIdx}].due=v;logChange('${fk}');save();renderCat('${cid}');})">${esc(sub.due||'—')}<span style="font-size:9px;color:#fbbf24;margin-left:3px">✎</span></span></td>`;
+                if(isEdit){
+                  tbody+=`<td class="tc-due"><span class="adm-editable" onclick="event.stopPropagation();adminEditDueModal('서브액션 기한',S.data['${cid}'].sections[${sIdx}].actions[${aIdx}].subActions[${saIdx}].due||'',v=>{syncEditFieldsToData('${cid}');S.data['${cid}'].sections[${sIdx}].actions[${aIdx}].subActions[${saIdx}].due=v;logChange('${fk}');save();renderCat('${cid}');},false)">${esc(sub.due||'—')}<span style="font-size:9px;color:#fbbf24;margin-left:3px">✎</span></span></td>`;
                 } else {
                   tbody+=`<td class="tc-due ${changedCls(fk)}" style="font-size:11px;color:#64748b"${changedTitle(fk)}>${esc(sub.due||'')}</td>`;
                 }
@@ -1665,7 +1725,7 @@ function renderCat(cid){
   <div class="tbl-wrap"><table class="init-tbl">${thead}${tbody}</table></div>
   ${renderIssues(cid)}`;
   // 렌더될 때마다 사전 번역(BAKED_TRANS)+캐시를 즉시 적용 (네트워크 호출 없음, 호출부에서 매번 챙길 필요 없음)
-  if(S.lang&&S.lang!=='ko')applyTranslationsFromCache();
+  if(S.lang)applyTranslationsFromCache();
 }
 
 const STATUS_BADGE_MAP={'시작 전':'badge-gray','진행 중':'badge-green','완료':'badge-blue',
@@ -1683,7 +1743,7 @@ function savePromiseActual(cid,idx,value){
   save();
 }
 function applyTranslationsFromCache(){
-  if(S.lang==='ko')return;
+  if(!S.lang)return;
   const cache=Object.assign({},(BAKED_TRANS[S.lang]||{}),(S.translations&&S.translations[S.lang])||{});
   if(!Object.keys(cache).length)return;
   const main=document.getElementById('main');
@@ -1702,7 +1762,7 @@ function applyTranslationsFromCache(){
 function toggleSec(cid,sIdx){
   S.expanded[cid][sIdx]=!S.expanded[cid][sIdx];
   renderCat(cid);
-  if(S.lang&&S.lang!=='ko')applyTranslationsFromCache();
+  if(S.lang)applyTranslationsFromCache();
 }
 function toggleCol(k,cid){
   if(k==='kpi'||k==='target'){
@@ -1860,10 +1920,10 @@ function confirmAddSubAction(cid,sIdx,aIdx){
 async function enterEdit(cid){
   S.editMode[cid]=1;
   try{
-    if(S.lang&&S.lang!=='ko'){
+    if(S.lang){
       const cat=S.data[cid];
       const toTr=new Set();
-      const addStr=s=>{if(s&&s.trim())s.split('\n').forEach(l=>{l=l.trim();if(l&&/[가-힣]/.test(l))toTr.add(l);});};
+      const addStr=s=>{if(s&&s.trim())s.split('\n').forEach(l=>{l=l.trim();if(l&&needsTranslation(l,S.lang))toTr.add(l);});};
       (cat.sections||[]).forEach(sec=>{
         sec.actions.forEach(act=>{
           addStr(act.owner);addStr(act.comment);addStr(act.due);
@@ -1875,13 +1935,14 @@ async function enterEdit(cid){
       const missing=[...toTr].filter(s=>!cache[s]&&!baked[s]);
       if(missing.length){
         await Promise.all(missing.map(async s=>{try{const r=await gTranslate(s,S.lang);if(r&&r!==s)cache[s]=r;}catch(_){}}));
+        pushTranslationsDebounced(); // 260803: 새로 번역된 캐시를 다른 팀원 화면에도 공유
       }
     }
   }catch(_){}
   renderCat(cid);
-  if(S.lang&&S.lang!=='ko')applyTranslations();
+  if(S.lang)applyTranslations();
 }
-function cancelEdit(cid){S.editMode[cid]=0;renderCat(cid);if(S.lang&&S.lang!=='ko')applyTranslations();}
+function cancelEdit(cid){S.editMode[cid]=0;renderCat(cid);if(S.lang)applyTranslations();}
 function syncEditFieldsToData(cid){
   if(!S.data[cid])return;
   document.querySelectorAll(`[data-act^="${cid}."]`).forEach(el=>{
@@ -1982,7 +2043,7 @@ function saveEdit(cid){
   if(!confirm('변경사항을 저장하겠습니까?'))return;
   syncEditFieldsToData(cid);
   S.editMode[cid]=0; save(); renderCat(cid);
-  if(S.lang&&S.lang!=='ko')applyTranslations();
+  if(S.lang)applyTranslations();
   refreshTranslation(); // 새 문구 자동 번역 → Excel에도 반영
 }
 
@@ -2017,7 +2078,7 @@ function renderCountry(cid){
 
   document.getElementById('page-'+cid).innerHTML=content;
   // 렌더될 때마다 사전 번역(BAKED_TRANS)+캐시를 즉시 적용 (네트워크 호출 없음, 호출부에서 매번 챙길 필요 없음)
-  if(S.lang&&S.lang!=='ko')applyTranslationsFromCache();
+  if(S.lang)applyTranslationsFromCache();
 }
 
 function renderCountryOverview(cid,cfg){
@@ -2306,7 +2367,7 @@ function renderIssues(cid){
     let cmtHtml='';
     cmts.forEach((cmt,cIdx)=>{
       if(cmt.parentIdx!=null) return;
-      const isCmtAuthor=user&&cmt.author===user.email;
+      const isCmtAuthor=(user&&cmt.author===user.email)||isAdmin();
       const replies=cmts.filter((r,ri)=>r.parentIdx===cIdx);
       const replyKey=`${cid}.${iIdx}.${cIdx}`;
       cmtHtml+=`<div class="comment-thread">
@@ -2324,7 +2385,7 @@ function renderIssues(cid){
         </div>`;
       replies.forEach((r,ri)=>{
         const rIdx=cmts.indexOf(r);
-        const isRAuthor=user&&r.author===user.email;
+        const isRAuthor=(user&&r.author===user.email)||isAdmin();
         cmtHtml+=`<div class="cmt reply">
           <div class="cmt-header">
             <span class="cmt-author">${esc(r.authorName||r.author)}</span>
@@ -2409,12 +2470,19 @@ function addCmt(cid,iIdx,parentIdx){
   iss.comments.push({author:u.email,authorName:u.name,text:el.value.trim(),ts:Date.now(),parentIdx:parentIdx});
   S.activeReply=null; save(); renderCid(cid);
 }
+// 260803: 작성자 본인 또는 관리자만 댓글 수정/삭제 가능 (버튼도 이 조건에서만 보이지만, 함수 자체에도 방어적으로 체크)
+function _cmtCanManage(cmt){
+  return isAdmin()||(S.user&&cmt&&cmt.author===S.user.email);
+}
 function editCmt(cid,iIdx,cIdx){
   const cmt=S.data[cid].issues[iIdx].comments[cIdx];
+  if(!_cmtCanManage(cmt)){alert('본인이 작성한 댓글만 수정할 수 있습니다.');return;}
   const t=prompt('댓글 수정:',cmt.text); if(t!=null&&t.trim()){cmt.text=t.trim();save();renderCid(cid);}
 }
 function delCmt(cid,iIdx,cIdx){
   const iss=S.data[cid].issues[iIdx];
+  const cmt=iss.comments[cIdx];
+  if(!_cmtCanManage(cmt)){alert('본인이 작성한 댓글만 삭제할 수 있습니다.');return;}
   const hasReplies=iss.comments.some((c,i)=>i!==cIdx&&c.parentIdx===cIdx);
   if(hasReplies){alert('답글이 있는 댓글은 삭제할 수 없습니다.');return;}
   if(!confirm('삭제하겠습니까?'))return;
@@ -3527,22 +3595,26 @@ function finishInit(){
   renderPage(S.page);
 }
 
-if(typeof STRIP_BACKUP!=='undefined'&&STRIP_BACKUP){
-  Object.keys(INIT_DATA).forEach(function(k){
-    var c=INIT_DATA[k];
-    if(!c)return;
-    if(c.sections)c.sections=[];
-    if(c.kpis)c.kpis=[];
-    if(c.issues)c.issues=[];
-    if(c.promises)c.promises=[];
-    if(c.initiatives)c.initiatives=[];
-    if(c.overview)c.overview={};
-    if('keyTakeaway' in c)c.keyTakeaway='';
-    if('commitKeyTakeaway' in c)c.commitKeyTakeaway='';
-  });
-  Object.keys(INIT_CHANGELOG).forEach(function(k){delete INIT_CHANGELOG[k];});
-}
-
+(function(){
+  if(typeof STRIP_BACKUP!=='undefined'&&STRIP_BACKUP){
+    Object.keys(INIT_DATA).forEach(k=>{
+      const d=INIT_DATA[k];
+      if(!d)return;
+      if(Array.isArray(d.sections))d.sections=[];
+      if(Array.isArray(d.kpis))d.kpis=[];
+      if(Array.isArray(d.issues))d.issues=[];
+      if(Array.isArray(d.promises))d.promises=[];
+      if(Array.isArray(d.initiatives))d.initiatives=[];
+      if('overview' in d)d.overview='';
+      if('keyTakeaway' in d)d.keyTakeaway='';
+      if('commitKeyTakeaway' in d)d.commitKeyTakeaway='';
+    });
+    for(const k in INIT_CHANGELOG){delete INIT_CHANGELOG[k];}
+    try{
+      const uiMatch=/let UI\s*=\s*(\{[\s\S]*?\});/.exec(document.currentScript ? '' : '');
+    }catch(_){}
+  }
+})();
 window.onload=init;
 </script>
 
