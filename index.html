@@ -463,6 +463,10 @@ function subscribeRealtime(){
       if(payload.new&&payload.new.field_key){
         S.changelog[payload.new.field_key]={ts:Number(payload.new.ts),by:payload.new.by};
         localStorage.setItem('cb_cl',JSON.stringify(S.changelog));
+        // 260805 발견: app_data 이벤트가 먼저 도착해 렌더링된 후 app_changelog 이벤트가 뒤늦게 도착하면,
+        // 데이터는 갱신되어도 48시간 빨간 볼드체 하이라이트가 반영되지 않던 버그 — 여기서도 재렌더링한다.
+        renderHeader();
+        renderPage(S.page);
       }
     })
     .subscribe();
@@ -2676,6 +2680,22 @@ async function downloadExcel(lang){
     const styles=[hdrRow.map(()=>ST.hdr)];
     const rowH=[{hpt:24}];
 
+    // ── Key Takeaway 블록 (260805 추가: 다운로드에 반영 안 되던 버그 수정) ──────
+    {
+      const ktField=cid==='cat2'?'commitKeyTakeaway':'keyTakeaway';
+      const ktLines=(cat[ktField]||'').split('\n').map(l=>l.trim()).filter(l=>l);
+      if(ktLines.length){
+        const ktHdrRow=['📝',tr('Key Takeaway'),'','','',''];
+        aoa.push(ktHdrRow); styles.push(ktHdrRow.map(()=>ST.promHdr)); rowH.push({hpt:22});
+        ktLines.forEach(l=>{
+          const row=['','• '+tr(l.replace(/^[•\-*]\s*/,'')),'','','',''];
+          aoa.push(row); styles.push(row.map(()=>ST.prom)); rowH.push({hpt:Math.max(18,estLines(l,TITLE_CHARS)*15)});
+        });
+        const sepRow=Array(6).fill('');
+        aoa.push(sepRow); styles.push(sepRow.map(()=>ST.sep)); rowH.push({hpt:6});
+      }
+    }
+
     // ── Cat2: 5대 약속 블록 ─────────────────────────────────────────
     if(cid==='cat2'&&cat.promises&&cat.promises.length){
       const phRow=['⭐',tr('5대 고객 약속 (Customer Promise)'),'',tr('목표'),tr('실적'),tr('비고')];
@@ -3047,6 +3067,20 @@ async function downloadPPT(){
   // 이니셔티브 표와 이슈 표를 같은 장에 억지로 욱여넣지 않고 각자 필요한 만큼 슬라이드를 나눠 그린다 (겹침/화면 밖 넘침 방지)
   ['cat1','cat2','cat3','cat4'].forEach((cid,ci)=>{
     const cat=S.data[cid];
+    // ── Key Takeaway 슬라이드 (260805 추가: 다운로드에 반영 안 되던 버그 수정) ──
+    {
+      const ktField=cid==='cat2'?'commitKeyTakeaway':'keyTakeaway';
+      const ktLines=(cat[ktField]||'').split('\n').map(l=>l.trim()).filter(l=>l);
+      if(ktLines.length){
+        const slKT=prs.addSlide();
+        addBanner(slKT,cat.title+' — Key Takeaway','');
+        const boxY=1.15, boxW=12.63, boxH=5.6;
+        slKT.addShape(prs.ShapeType.rect,{x:.35,y:boxY,w:boxW,h:boxH,fill:{color:'F8FAFC'},line:{color:'E2E8F0',width:.75}});
+        const bulletItems=ktLines.map(l=>({text:tr(l.replace(/^[•\-*]\s*/,'')),options:{bullet:true,breakLine:true,paraSpaceAfter:8}}));
+        slKT.addText(bulletItems,{x:.55,y:boxY+.2,w:boxW-.4,h:boxH-.4,fontSize:14,color:'1E293B',fontFace:'Arial',valign:'top'});
+        footer(slKT,cat.title+' Key Takeaway');
+      }
+    }
     renderPaginatedTable({
       bannerTitle:cat.title, bannerSub:'',
       kpiCards:catKpiCards(cid,cat),
