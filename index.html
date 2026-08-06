@@ -503,7 +503,8 @@ async function pushTranslations(){
 }
 function saveUser(){localStorage.setItem('cb_user',JSON.stringify(S.user));}
 // Admin helpers
-function isAdmin(){return S.user&&S.user.email==='kelly.ko@classys.com';}
+const ADMIN_EMAILS=['kelly.ko@classys.com','karine.tavecchio@medsystems.com.br'];
+function isAdmin(){return S.user&&ADMIN_EMAILS.includes(S.user.email);}
 function gt(key,def){return UI[key]!==undefined?UI[key]:def;}
 function editLabel(key,def){
   if(!isAdmin())return;
